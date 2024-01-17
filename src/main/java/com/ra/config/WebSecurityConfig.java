@@ -1,7 +1,6 @@
 package com.ra.config;
 
 import com.ra.security.jwt.JwtEntryPoint;
-import com.ra.security.jwt.JwtProvider;
 import com.ra.security.jwt.JwtTokenFilter;
 import com.ra.security.user_principal.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -30,14 +28,16 @@ public class WebSecurityConfig {
     private JwtEntryPoint jwtEntryPoint;
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
+//    @Autowired
+//    private AccessDenied accessDenied;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
-                .authorizeHttpRequests((auth)->
-                        auth.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                ).exceptionHandling((auth)->auth.authenticationEntryPoint(jwtEntryPoint))
+                .authorizeHttpRequests(
+                        (auth)-> auth.requestMatchers("/v1/auth/**").permitAll()
+                                .requestMatchers("/v1/admin/**").hasAuthority("ROLE_ADMIN"))//Check quyền
+                                .exceptionHandling((auth)->auth.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement((auth)->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

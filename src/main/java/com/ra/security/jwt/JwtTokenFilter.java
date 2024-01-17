@@ -23,7 +23,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private JwtProvider jwtProvider;
     @Autowired
     private UserDetailService userDetailService;
-    private Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
+    private final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -41,6 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }catch (Exception e){
             logger.error("Un authentication {}", e.getMessage());
         }
+        filterChain.doFilter(request, response);
     }
     public String getTokenFromRequest(HttpServletRequest request){
         String header = request.getHeader("Authorization");

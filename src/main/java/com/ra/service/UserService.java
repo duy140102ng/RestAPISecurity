@@ -4,7 +4,7 @@ import com.ra.model.dto.request.UserLogin;
 import com.ra.model.dto.request.UserRegister;
 import com.ra.model.dto.response.JwtResponse;
 
-public interface IUserService {
+public interface UserService {
     JwtResponse handleLogin(UserLogin userLogin);
     String handleRegister(UserRegister userRegister);
 }

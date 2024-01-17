@@ -12,6 +12,7 @@ import java.util.Set;
 @Data
 @Builder
 public class JwtResponse {
+    private Long id;
     private String accessToken;
     private final String type = "Bearer";
     private String fullName;
