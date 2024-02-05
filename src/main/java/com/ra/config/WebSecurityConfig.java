@@ -36,8 +36,9 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(
                         (auth)-> auth.requestMatchers("/v1/auth/**").permitAll()
-                                .requestMatchers("/v1/admin/**").hasAuthority("ROLE_ADMIN"))//Check quyền
-                                .exceptionHandling((auth)->auth.authenticationEntryPoint(jwtEntryPoint))
+                                .requestMatchers("/v1/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers("/v1/user/**").hasAuthority("USER"))
+                .exceptionHandling((auth)->auth.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement((auth)->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

@@ -9,31 +9,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class User {
+@Builder
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private String userName;
-    private String passWord;
+    private Long sku;
     @Column(unique = true)
-    private String email;
-//    @Column(columnDefinition = "boolean default true")
-    private Boolean status = true;
-    private String avatar;
-    @Column(unique = true)
-    private String phone;
-    private String address;
+    private String productName;
+    private String description;
+    private Double price;
+    private Integer stock_quantity;
+    private String image;
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private Category category;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private LocalDateTime created_at;
     @PrePersist
@@ -46,23 +44,13 @@ public class User {
     public void setUpdatedAt() {
         this.updated_at = LocalDateTime.now();
     }
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "product_id")
     @JsonIgnore
-    List<Orders> orders;
-    @OneToMany(mappedBy = "user_id")
+    List<OrderDetails> orderDetails;
+    @OneToMany(mappedBy = "product_id")
     @JsonIgnore
     List<Shopping_Cart> shoppingCarts;
-    @OneToMany(mappedBy = "user_id")
-    @JsonIgnore
-    List<Address> addresses;
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "product_id")
     @JsonIgnore
     List<Wish_List> wishLists;
 }

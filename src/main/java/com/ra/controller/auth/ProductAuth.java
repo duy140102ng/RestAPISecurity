@@ -1,4 +1,4 @@
-package com.ra.controller.admin;
+package com.ra.controller.auth;
 
 import com.ra.model.dto.response.ProductResponse;
 import com.ra.model.entity.Product;
@@ -12,50 +12,46 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/v1/admin/products")
-public class ProductController {
+@RequestMapping("/v1/auth/products")
+public class ProductAuth {
     @Autowired
     private ProductService productService;
-    //Hiển thị phân trang
-    @GetMapping("")
+    //Tìm kiếm sản phẩm theo tên hoặc mô tả
+    @PostMapping("/search")
+    public ResponseEntity<?> findByName(@PathVariable String search) {
+        List<Product> products = productService.findByProductNameOrDescription(search);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+    //Danh sách sản phẩm mới
+    @GetMapping("/new-products")
     public ResponseEntity<?> getAll(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "productName", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(defaultValue = "desc", name = "order") String order
     ) {
         Pageable pageable;
-        if (order.equals("asc")) {
-            pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        } else {
+        if (order.equals("desc")) {
             pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        } else {
+            pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         }
         Page<ProductResponse> productResponses = productService.getAll(pageable);
         return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
-    //Thêm mới sản phẩm
-    @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody Product products){
-        Product productsNew = productService.save(products);
-        return new ResponseEntity<>(productsNew, HttpStatus.CREATED);
+    //Danh sách sản phẩm theo danh mục
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<?> getProductByCategory(@PathVariable Long id){
+        List<Product> productResponses = productService.findProductByCategoryId(id);
+        return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
-    //Lấy thông tin sản phẩm theo Id
+    //Chi tiết thông tin sản phẩm theo Id
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id){
-        Product products = productService.findById(id);
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
-    //Update sản phẩm
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Product products){
-        Product productsNew = productService.save(products);
-        return new ResponseEntity<>(productsNew, HttpStatus.OK);
-    }
-    //Xóa
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        productService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Product product = productService.findById(id);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 }

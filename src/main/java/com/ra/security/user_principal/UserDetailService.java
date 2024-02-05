@@ -10,21 +10,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOptional = userRepository.findByUserName(username);
-        if (userOptional.isPresent()){
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByUserName(userName);
+        if(userOptional.isPresent()){
             User user = userOptional.get();
-            UserPrincipal userPrincipal = UserPrincipal.builder()
-                    .user(user)
-                    .authorities(user.getRoles().stream().map(
-                            item->new SimpleGrantedAuthority(item.getRoleName())).toList())
-                    .build();
+            UserPrincipal userPrincipal = UserPrincipal.builder().
+                    user(user).authorities(user.getRoles().stream().map(
+                            item->new SimpleGrantedAuthority(item.getRoleName().toString())
+                    ).collect(Collectors.toList())).build();
             return userPrincipal;
         }
         return null;

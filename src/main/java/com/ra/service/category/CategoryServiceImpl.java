@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
@@ -33,5 +35,10 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public void delete(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Category> findByCategoryNameOrDescription(String keyword) {
+        return categoryRepository.findByCategoryNameContainingOrDescriptionContaining(keyword,keyword);
     }
 }

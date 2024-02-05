@@ -1,7 +1,6 @@
-package com.ra.controller.admin;
+package com.ra.controller.auth;
 
 import com.ra.model.dto.response.CategoryResponse;
-import com.ra.model.entity.Category;
 import com.ra.service.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,18 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/admin/categories")
-public class CategoryController {
+@RequestMapping("/v1/auth/categories")
+public class CategoryAuth {
     @Autowired
     private CategoryService categoryService;
-
-    //Hiển thị phân trang
+    //Danh sách danh mục được bán
     @GetMapping("")
     public ResponseEntity<?> getAll(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -38,29 +36,4 @@ public class CategoryController {
         Page<CategoryResponse> categoryResponses = categoryService.getAll(pageable);
         return new ResponseEntity<>(categoryResponses, HttpStatus.OK);
     }
-//Thêm mới danh mục
-    @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody Category category){
-        Category categoryNew = categoryService.save(category);
-        return new ResponseEntity<>(categoryNew, HttpStatus.CREATED);
-    }
-    //Lấy thông tin danh mục theo id
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        Category categories = categoryService.findById(id);
-        return new ResponseEntity<>(categories, HttpStatus.OK);
-    }
-    //Update danh mục
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Category category){
-        Category categoryNew = categoryService.save(category);
-        return new ResponseEntity<>(categoryNew, HttpStatus.OK);
-    }
-    //Xóa
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        categoryService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }
-

@@ -1,8 +1,8 @@
-package com.ra.service.impl;
+package com.ra.service.user_role;
 
+import com.ra.model.entity.ENUM.UserRole;
 import com.ra.model.entity.Role;
 import com.ra.repository.RoleRepository;
-import com.ra.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +11,8 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
     @Override
-    public Role findByRoleName(String roleName) {
-        Role role = roleRepository.findByRoleName(roleName).orElseThrow(() -> new RuntimeException("role not found"));
+    public Role findByRoleName(UserRole userRole) {
+        Role role = roleRepository.findByRoleName(userRole).orElseThrow(() -> new RuntimeException("role not found"));
         return role;
     }
 }

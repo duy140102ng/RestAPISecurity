@@ -14,11 +14,13 @@ import lombok.NoArgsConstructor;
 public class CategoryResponse {
     private Long id;
     private String categoryName;
+    private String description;
     private Boolean status;
 
     public CategoryResponse(Category category) {
         this.id = category.getId();
         this.categoryName = category.getCategoryName();
+        this.description = category.getDescription();
         this.status = category.getStatus();
     }
 }

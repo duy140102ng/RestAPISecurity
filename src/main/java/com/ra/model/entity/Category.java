@@ -20,9 +20,10 @@ public class Category {
     private Long id;
     @Column(unique = true)
     private String categoryName;
+    private String description;
     @Column(columnDefinition = "boolean default true")
     private Boolean status;
     @OneToMany(mappedBy = "category")
     @JsonIgnore
-    List<Products> products;
+    List<Product> products;
 }
